@@ -25,6 +25,8 @@ object Application {
       }
     }
 
+    val binding = Await.result(Http().bindAndHandle(route, "127.0.0.1", serverConfig.port), 3.seconds)
+
     println("Started server at localhost:" + serverConfig.port + ", press enter to kill")
     StdIn.readLine()
     system.terminate()
