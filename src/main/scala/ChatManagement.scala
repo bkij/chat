@@ -16,10 +16,7 @@ trait ChatManagement   { this:  Actor =>
 
   private def getSession(from: String,channel:String) : List[ActorRef] = {
     if (sessions.contains(from)) {
-      val cls = channels.get(channel)
-      for(cl <-cls){
-        sessions.get(cl).collect
-      }
+      sessions.filterKeys(p=>channels.get(channel).contains(p)).values
     }
     else {
       EventHandler.info(this, "Session expired for %s".format(from))
