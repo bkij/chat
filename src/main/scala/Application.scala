@@ -21,7 +21,7 @@ object Application {
 
     val route = path(serverConfig.path) {
       get {
-        handleWebSocketMessages(flow)
+        handleWebSocketMessages(MessageDispatcher.handleMessage())
       }
     }
 
