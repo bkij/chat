@@ -10,5 +10,6 @@ object Config {
 
   def fromFile(filename: String): Config = {
     // TODO: implement
+    new Config(0, "")
   }
 }

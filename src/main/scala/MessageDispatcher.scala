@@ -1,8 +1,10 @@
+import akka.actor.ActorSystem
 import akka.http.scaladsl.model.ws.{BinaryMessage, Message, TextMessage}
+import akka.stream.ActorMaterializer
 import akka.stream.scaladsl._
 
 object MessageDispatcher {
-  def handleMessage(): Flow[Message, Message, Any] = {
+  def handleMessage()(implicit materializer: ActorMaterializer, system: ActorSystem): Flow[Message, Message, Any] = {
     Flow[Message].mapConcat {
       case TextMessage.Strict(text) =>
         val messageParts = text.split('_')
