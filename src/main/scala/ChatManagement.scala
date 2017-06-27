@@ -12,6 +12,7 @@ trait ChatManagement   { this:  Actor =>
   protected def chatManagement: Receive = {
     case msg @ ChatMessage(from,channel, _) => getSession(from,channel).foreach(_ ! msg)
     case msg @ GetChatLog(from,channel) =>     getSession(from,channel).foreach(_ forward msg)
+    case msg @ JoinChannel(from,channel) => channels.
   }
 
   private def getSession(from: String,channel:String) : List[ActorRef] = {
