@@ -1,6 +1,16 @@
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 
+import akka.http.scaladsl._
+import akka.http.scaladsl.model.ws.{Message, TextMessage}
+import akka.http.scaladsl.server.Directives._
+import akka.stream._
+import akka.stream.scaladsl._
+
+import scala.concurrent.duration._
+import scala.concurrent.{Await, Future}
+import scala.io.StdIn
+
 import scala.io.StdIn
 
 object Application {
@@ -8,6 +18,12 @@ object Application {
     implicit val system = ActorSystem()
     implicit val materializer = ActorMaterializer()
     val serverConfig = Config()
+
+    val route = path(serverConfig.path) {
+      get {
+        handleWebSocketMessages(flow)
+      }
+    }
 
     println("Started server at localhost:" + serverConfig.port + ", press enter to kill")
     StdIn.readLine()
