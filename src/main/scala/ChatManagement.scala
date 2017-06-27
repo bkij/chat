@@ -16,11 +16,11 @@ trait ChatManagement   { this:  Actor =>
 
   private def getSession(from: String,channel:String) : List[ActorRef] = {
     if (sessions.contains(from)) {
-      sessions.filterKeys(p=>channels.get(channel).contains(p)).values
+      sessions.filterKeys(p=>channels.get(channel).contains(p)).values.toList
     }
     else {
       EventHandler.info(this, "Session expired for %s".format(from))
-      None
+      List()
     }
   }
 }
