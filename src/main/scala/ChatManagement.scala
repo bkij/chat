@@ -6,18 +6,22 @@ import scala.collection.mutable
 /**
   * Created by grzegrz on 27.06.17.
   */
-trait ChatManagement   { this:  Actor =>
-  val sessions:HashMap[String,ActorRef]
-  val channels:HashMap[String,List[String]]
+trait ChatManagement {
+  this: Actor =>
+  val sessions: HashMap[String, ActorRef]
+  val channels: HashMap[String, List[String]]
+
   protected def chatManagement: Receive = {
-    case msg @ ChatMessage(from,channel, _) => getSession(from,channel).foreach(_ ! msg)
-    case msg @ GetChatLog(from,channel) =>     getSession(from,channel).foreach(_ forward msg)
-    case msg @ JoinChannel(from,channel) => channels.
+    case msg@ChatMessage(from, channel, _) => getSession(from, channel).foreach(_ ! msg)
+    case msg@GetChatLog(from, channel) => getSession(from, channel).foreach(_ forward msg)
+    case msg@JoinChannel(from, channel) => channels.updated(channel, channels.get(channel) ++ from)
+    case msg@LeftChannel(from, channel) => channels.updated(channel, channels.get(channel).filterNot(_ == from))
   }
 
-  private def getSession(from: String,channel:String) : List[ActorRef] = {
+  private def getSession(from: String, channel: String): List[ActorRef] = {
     if (sessions.contains(from)) {
-      sessions.filterKeys(p=>channels.get(channel).contains(p)).values.toList
+      val cls = channels.get(channel)
+      sessions.filter((t) => cls.contains(t._1)).values.toList
     }
     else {
       EventHandler.info(this, "Session expired for %s".format(from))
