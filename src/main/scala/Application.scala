@@ -1,17 +1,9 @@
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-
 import akka.http.scaladsl._
-import akka.http.scaladsl.model.ws.{Message, TextMessage}
 import akka.http.scaladsl.server.Directives._
-import akka.stream._
-import akka.stream.scaladsl._
-
-import scala.concurrent.duration._
-import scala.concurrent.{Await, Future}
-import scala.io.StdIn
-
-import scala.io.StdIn
+import scala.util.{Success, Failure}
+import scala.concurrent.ExecutionContext.Implicits.global
 
 object Application {
   def main(args: Array[String]): Unit = {
@@ -19,16 +11,27 @@ object Application {
     implicit val materializer = ActorMaterializer()
     val serverConfig = Config()
 
-    val route = path(serverConfig.path) {
-      get {
-        handleWebSocketMessages(MessageDispatcher.handleMessage())
+    val route = get {
+      pathSingleSlash {
+        getFromResource("index.html")
+      } ~
+      path("webSocket.js") (getFromResource("webSocket.js")) ~
+      path("style.css") (getFromResource("style.css")) ~
+      path("chat") {
+        cookie("username") { usernameCookie =>
+          handleWebSocketMessages(MessageDispatcher.handleMessage(usernameCookie.value))
+        }
       }
     }
 
-    val binding = Await.result(Http().bindAndHandle(route, "127.0.0.1", serverConfig.port), 3.seconds)
+    val binding = Http().bindAndHandle(route, "127.0.0.1", serverConfig.port)
 
-    println("Started server at localhost:" + serverConfig.port + ", press enter to kill")
-    StdIn.readLine()
-    system.terminate()
+    binding.onComplete {
+      case Success(_) =>
+        println(s"Server is listening on port ${serverConfig.port}")
+      case Failure(_) =>
+        println("Couldn't start server")
+        system.terminate()
+    }
   }
 }
