@@ -10,10 +10,10 @@ class ChannelActor extends Actor {
       ???
     case JoinChannel(name, actorRef) =>
       sessions += name -> actorRef
-      broadcast(Statement("User $name joined channel"))
+      broadcast(Statement(s"User $name joined channel"))
     case LeftChannel(name) =>
       sessions -= name
-      broadcast(Statement("User $name left channel"))
+      broadcast(Statement(s"User $name left channel"))
     case msg: ChatMessage =>
       broadcast(msg)
   }
