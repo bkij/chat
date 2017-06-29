@@ -4,21 +4,32 @@ import akka.stream.ActorMaterializer
 import akka.stream.scaladsl._
 
 object MessageDispatcher {
-  def handleMessage()(implicit materializer: ActorMaterializer, system: ActorSystem): Flow[Message, Message, Any] = {
-    Flow[Message].mapConcat {
-      case TextMessage.Strict(text) =>
+  val chatServer = new ChatServer()
+  def handleMessage(username: String)(implicit materializer: ActorMaterializer, system: ActorSystem): Flow[Message, Message, Any] = {
+    Flow[Message].collect {
+      case msg @ TextMessage.Strict(text) =>
         val messageParts = text.split('_')
         messageParts(0) match {
-          case "usermessage" => TextMessage("") :: Nil // TextMessage(chatManagement.foo(messageParts(1)))?
-          case "addchannel" => TextMessage("") :: Nil
-          case "username" => TextMessage("") :: Nil
-          case "joinchannel" => TextMessage("") :: Nil
-          case "exitchannel" => TextMessage("") :: Nil
-          case _ => TextMessage("") :: Nil // Error?
+          case "usermessage" =>  chatServer ! messaging.ChatMessage(username, messageParts(1), _)
+          case "addchannel" => chatServer ! messaging.AddChannel(username, messageParts(1), _)
+          case "username" => chatServer ! messaging.Login(messageParts(1))
+          case "joinchannel" => chatServer ! messaging.JoinChannel(username, messageParts(1))
+          case "exitchannel" => chatServer ! messaging.LeftChannel(username, messageParts(1))
+          case _ => Nil
         }
       case bm: BinaryMessage =>
         bm.dataStream.runWith(Sink.ignore)
         Nil
+      case otherMessage: TextMessage.Streamed =>
+        otherMessage.textStream.runWith(Sink.ignore)
+        Nil
+    }
+    .map {
+      case msg: messaging.Message =>
+        /*
+         * TODO: implement toJson
+         */
+        TextMessage.Strict(toJson(msg))
     }
   }
 }
