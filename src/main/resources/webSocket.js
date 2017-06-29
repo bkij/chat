@@ -6,6 +6,7 @@ webSocket.onopen = setUsername();
 
 //Send message if "Send" is clicked
 id("send").addEventListener("click", function () {
+    sent(webSocket,"getchannels");
     sendMessage(clientWebSocket,id("message").value);
 });
 
