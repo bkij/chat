@@ -1,15 +1,15 @@
 import akka.actor.{Actor, ActorRef}
-import messaging.{ChatMessage, Statement,UserJoined,UserLeft}
+import messaging._
 
 
 class ChannelActor extends Actor {
   var sessions: Map[String, ActorRef] = Map.empty[String, ActorRef]
 
   override def receive: Receive = {
-    case UserJoined(name, actorRef) =>
+    case JoinChannel(name, actorRef) =>
       sessions += name -> actorRef
       broadcast(Statement("User $name joined channel"))
-    case UserLeft(name) =>
+    case LeftChannel(name) =>
       sessions -= name
       broadcast(Statement("User $name left channel"))
     case msg: ChatMessage =>
