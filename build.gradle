@@ -16,6 +16,10 @@ dependencies {
     compile group: 'org.scala-lang', name: 'scala-library', version: '2.11.7'
     compile group: 'com.typesafe.akka', name: 'akka-http-experimental_2.11', version: '2.4.4'
     compile group: 'com.typesafe.akka', name: 'akka-stream_2.11', version: '2.4.4'
+    // https://mvnrepository.com/artifact/com.typesafe.play/play-json_2.11
+    compile group: 'com.typesafe.play', name: 'play-json_2.11', version: '2.6.0'
+
+
 }
 
 task wrapper(type: Wrapper) {

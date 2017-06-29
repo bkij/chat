@@ -3,6 +3,7 @@ import akka.http.scaladsl.model.ws.{BinaryMessage, Message, TextMessage}
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl._
 import messaging.ChatMessage
+import play.api.libs.json.Json
 
 import scala.collection.mutable
 import scala.util.parsing.json.JSONObject
@@ -41,7 +42,7 @@ object MessageDispatcher {
     }
     .map {
       case msg: Any =>
-        TextMessage.Strict(JSONObject(Map("channelList"->channels.keySet.mkString("[",",","]"))).toString())  // ??
+        TextMessage.Strict(Json.toJson(Map("channelList" -> channels.keySet)).toString())  // ??
     }
   }
 
