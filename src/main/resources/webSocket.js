@@ -109,7 +109,7 @@ function sendMessage(socket,message) {
 //Update the chat-panel
 function handleIncoming(msg) {
     var data = JSON.parse(msg.data);
-    if(data.reason === "message")
+    if(data.reason == "message")
         insert("chat", data.userMessage);
 }
 function handleMessage(msg) {
@@ -118,7 +118,7 @@ function handleMessage(msg) {
 
 
     id("channelList").innerHTML = "";
-
+    var kontener = id("channelList");
     data.channelList.forEach(function (channel) {
 
         var znacznik = document.createElement('button');
@@ -126,7 +126,7 @@ function handleMessage(msg) {
         var t = document.createTextNode(channel);
         znacznik.appendChild(t);
 
-        var kontener = id("channelList");
+
         kontener.appendChild(znacznik);
     });
 

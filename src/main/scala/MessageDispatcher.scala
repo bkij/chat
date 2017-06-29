@@ -49,7 +49,7 @@ object MessageDispatcher {
   def toJson(msg: messaging.Message): String = {
     msg match {
       case textmessage @ ChatMessage(user, content) =>
-        "{" + "\"purpose\": \"message\", " + "\"userMessage\": " + "\"" + wrapHtml(user, content) + "\"" + "}"
+        "{" + "\"reason\": \"message\", " + "\"userMessage\": " + "\"" + wrapHtml(user, content) + "\"" + "}"
     }
   }
 
