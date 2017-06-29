@@ -11,18 +11,22 @@ object Application {
     implicit val materializer = ActorMaterializer()
     val serverConfig = Config()
 
-    val route = get {
+    val route =
       pathSingleSlash {
         getFromResource("index.html")
       } ~
       path("webSocket.js") (getFromResource("webSocket.js")) ~
       path("style.css") (getFromResource("style.css")) ~
-      path("chat") {
-        cookie("username") { usernameCookie =>
-          handleWebSocketMessages(MessageDispatcher.handleMessage(usernameCookie.value))
+      pathPrefix("chat" / IntNumber) { channel =>
+        parameter('name) { username =>
+          handleWebSocketMessages(MessageDispatcher.handleMessage(username, channel))
+        }
+      } ~
+      path("channels") {
+        parameter('name) { username =>
+          handleWebSocketMessages(MessageDispatcher.handleChannelMessage(username))
         }
       }
-    }
 
     val binding = Http().bindAndHandle(route, "127.0.0.1", serverConfig.port)
 
