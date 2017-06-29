@@ -5,6 +5,7 @@ import akka.stream.scaladsl._
 import messaging.ChatMessage
 
 import scala.collection.mutable
+import scala.util.parsing.json.JSONObject
 
 object MessageDispatcher {
   val channels = new mutable.HashMap[Int, Channel]
@@ -21,7 +22,7 @@ object MessageDispatcher {
       }
   }
 
-  def handleChannelMessage(username: String)(implicit materializer: ActorMaterializer, system: ActorSystem): Flow[Message, Message, _] = {
+  def handleChannelMessage()(implicit materializer: ActorMaterializer, system: ActorSystem): Flow[Message, Message, _] = {
     Flow[Message]
     .collect {
       case TextMessage.Strict(text) => {
@@ -33,12 +34,14 @@ object MessageDispatcher {
             Nil                 // ??
           case "leftchannel" =>
             Nil                 // ??
+          case "getchannels" =>
+              JSONObject(Map("channelList"->channels.keySet)).toString()
         }
       }
     }
     .map {
       case msg: Any =>
-        TextMessage.Strict("")  // ??
+        TextMessage.Strict(JSONObject(Map("channelList"->channels.keySet)).toString())  // ??
     }
   }
 

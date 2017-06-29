@@ -23,10 +23,9 @@ object Application {
         }
       } ~
       path("channels") {
-        parameter('name) { username =>
-          handleWebSocketMessages(MessageDispatcher.handleChannelMessage(username))
+          handleWebSocketMessages(MessageDispatcher.handleChannelMessage())
         }
-      }
+
 
     val binding = Http().bindAndHandle(route, "127.0.0.1", serverConfig.port)
 

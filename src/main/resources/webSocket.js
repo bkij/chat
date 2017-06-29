@@ -1,8 +1,9 @@
-var webSocket = new WebSocket("ws://" + location.hostname + ":" + location.port + "/chat/");
+setUsername();
+var webSocket = new WebSocket("ws://" + location.hostname + ":" + location.port + "/channels");
 var clientWebSocket;
 webSocket.onmessage = function (msg) { handleMessage(msg); };
 webSocket.onclose = function () { alert("WebSocket connection closed") };
-webSocket.onopen = setUsername();
+webSocket.onopen =sent(webSocket,"getchannels");
 
 //Send message if "Send" is clicked
 id("send").addEventListener("click", function () {
