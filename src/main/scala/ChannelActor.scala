@@ -1,4 +1,5 @@
 import akka.actor.{Actor, ActorRef}
+import messaging.{ChatMessage, Statement,UserJoined,UserLeft}
 
 
 class ChannelActor extends Actor {

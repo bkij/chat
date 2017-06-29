@@ -12,7 +12,7 @@ id("message").addEventListener("keypress", function (e) {
 
 id("addchannel").addEventListener("click", function () {
     if(id("channel").value!=="") {
-        sent("addchannel_" + id("channel").value);
+        //sent("addchannel_" + id("channel").value);
         id("channel".value = "");
     }
 });
@@ -61,7 +61,7 @@ function waitForConnection(callback, interval) {
         }, interval);
     }
 };
-function login(){
+/*function login(){
     var username = getCookie("username");
     if(username != ""){
         alert("logging as " + username + "...");
@@ -70,7 +70,7 @@ function login(){
     }
     else
         setUsername();
-}
+}*/
 
 function setUsername(){
 
