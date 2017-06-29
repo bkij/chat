@@ -21,7 +21,24 @@ object MessageDispatcher {
   }
 
   def handleChannelMessage(username: String)(implicit materializer: ActorMaterializer, system: ActorSystem): Flow[Message, Message, _] = {
-
+    Flow[Message]
+    .collect {
+      case TextMessage.Strict(text) => {
+        val messageParts = text.split('_')
+        messageParts(0) match {
+          case "addchannel" =>
+            channels.put(messageParts(1).toInt, new Channel())
+          case "joinchannel" =>
+            Nil                 // ??
+          case "leftchannel" =>
+            Nil                 // ??
+        }
+      }
+    }
+    .map {
+      case msg: Any =>
+        TextMessage.Strict("")  // ??
+    }
   }
 
   def toJson(msg: messaging.Message): String = {
