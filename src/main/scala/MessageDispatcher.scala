@@ -35,13 +35,13 @@ object MessageDispatcher {
           case "leftchannel" =>
             Nil                 // ??
           case "getchannels" =>
-              JSONObject(Map("channelList"->channels.keySet)).toString()
+              JSONObject(Map("channelList" -> channels.keySet)).toString()
         }
       }
     }
     .map {
       case msg: Any =>
-        TextMessage.Strict(JSONObject(Map("channelList"->channels.keySet)).toString())  // ??
+        TextMessage.Strict(JSONObject(Map("channelList"->channels.keySet.mkString("[",",","]"))).toString())  // ??
     }
   }
 
