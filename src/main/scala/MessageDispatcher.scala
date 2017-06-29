@@ -2,6 +2,7 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.model.ws.{BinaryMessage, Message, TextMessage}
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl._
+import messaging.ChatMessage
 
 import scala.collection.mutable
 
@@ -42,6 +43,13 @@ object MessageDispatcher {
   }
 
   def toJson(msg: messaging.Message): String = {
-    msg.toString // TODO
+    msg match {
+      case textmessage @ ChatMessage(user, content) =>
+        "{" + "\"purpose\": \"message\", " + "\"userMessage\": " + "\"" + wrapHtml(user, content) + "\"" + "}"
+    }
+  }
+
+  def wrapHtml(sender: String, content: String) = {
+    s"<article><b>$sender says:</b> <p>$content</p></article>"
   }
 }
