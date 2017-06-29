@@ -60,7 +60,7 @@ function waitForConnection(callback, interval) {
     }
 };
 function login(){
-    var username = getCookie("username");// getCookie("username");//= getCookie("username");
+    var username = getCookie("username");
     if(username != ""){
         alert("logging as " + username + "...");
         sent("username_" + username);

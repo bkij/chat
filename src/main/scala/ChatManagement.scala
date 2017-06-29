@@ -3,9 +3,7 @@ import akka.actor.{Actor, ActorRef}
 import scala.collection.immutable.HashMap
 import scala.collection.mutable
 
-/**
-  * Created by grzegrz on 27.06.17.
-  */
+
 trait ChatManagement {
   this: Actor =>
   val sessions: HashMap[String, ActorRef]
