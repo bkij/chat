@@ -11,9 +11,9 @@ class ChannelActor extends Actor {
     case UserLeft(name) =>
       sessions -= name
       broadcast(Statement("User $name left channel"))
-    case msg: IncMessage =>
+    case msg: ChatMessage =>
       broadcast(msg)
   }
 
-  def broadcast(message: Event): Unit = sessions.values.foreach(_ ! message)
+  def broadcast(message: ChatMessage): Unit = sessions.values.foreach(_ ! message)
 }
