@@ -1,10 +1,4 @@
-/**
- * Created by Grzegrz on 2017-01-24.
- */
-var webSocket = new WebSocket("ws://" + location.hostname + ":" + location.port + "/chat/");
-webSocket.onmessage = function (msg) { handleMessage(msg); };
-webSocket.onclose = function () { alert("WebSocket connection closed") };
-webSocket.onopen = login();
+
 
 //Send message if "Send" is clicked
 id("send").addEventListener("click", function () {
@@ -32,12 +26,20 @@ id("exitchannel").addEventListener("click", function () {
 });
 
 function joinchannel(channel){
+
     var div = document.getElementById('chat');
     while(div.firstChild){
         div.removeChild(div.firstChild);
     }
-    sent("joinchannel_" + channel);
+    setUsername();
+    var webSocket = new WebSocket("ws://" + location.hostname + ":" + location.port + "/chat/"+channel+"?name="+getCookie("username"));
+    webSocket.onmessage = function (msg) { handleMessage(msg); };
+    webSocket.onclose = function () { alert("WebSocket connection closed") };
+    webSocket.onopen = webSocket.send("");
+    //sent("joinchannel_" + channel);
 }
+
+
 
 function sent(message, callback) {
     waitForConnection(function () {
@@ -63,8 +65,8 @@ function login(){
     var username = getCookie("username");
     if(username != ""){
         alert("logging as " + username + "...");
-        sent("username_" + username);
-        return;
+        //sent("username_" + username);
+        return username;
     }
     else
         setUsername();
@@ -87,10 +89,11 @@ function setUsername(){
         setUsername();
         return;
     }
-
+    alert("logging as " + username + "...");
     setCookie("username", username);
 
-    sent("username_" + username);
+    //return username;
+    //sent("username_" + username);
 }
 
 //Send a message if it's not empty, then clear the input field
