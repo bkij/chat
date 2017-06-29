@@ -6,6 +6,8 @@ class ChannelActor extends Actor {
   var sessions: Map[String, ActorRef] = Map.empty[String, ActorRef]
 
   override def receive: Receive = {
+    case Login(name) =>
+      ???
     case JoinChannel(name, actorRef) =>
       sessions += name -> actorRef
       broadcast(Statement("User $name joined channel"))
